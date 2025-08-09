@@ -3,9 +3,9 @@
 //! This example demonstrates how to create an HTX server that can
 //! handle incoming connections and process requests.
 
-use htx::{HtxServer, Config, Result};
-use tokio;
+use htx::{Config, HtxServer, Result};
 use std::net::SocketAddr;
+use tokio;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -18,8 +18,7 @@ async fn main() -> Result<()> {
     let config = Config::default();
 
     // Define the server address
-    let addr: SocketAddr = "127.0.0.1:8443".parse()
-        .expect("Invalid server address");
+    let addr: SocketAddr = "127.0.0.1:8443".parse().expect("Invalid server address");
 
     // Create the HTX server with correct API
     println!("📡 Creating HTX server...");

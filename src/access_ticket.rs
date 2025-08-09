@@ -1,18 +1,18 @@
 use crate::{
     config::AccessTicketConfig,
-    crypto::{X25519KeyPair, random_bytes, access_ticket},
+    crypto::{access_ticket, random_bytes, X25519KeyPair},
     error::{HtxError, Result},
 };
-use base64::{Engine as _, engine::general_purpose};
+use base64::{engine::general_purpose, Engine as _};
 use bytes::BufMut;
+use rand::Rng;
 use std::{
     collections::HashMap,
     net::IpAddr,
     sync::{Arc, Mutex},
     time::{Duration, SystemTime, UNIX_EPOCH},
 };
-use tokio::time::Instant;
-use rand::Rng; // for gen_range
+use tokio::time::Instant; // for gen_range
 
 /// Access ticket carrier types
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -24,10 +24,7 @@ pub enum CarrierType {
 
 impl CarrierType {
     /// Select carrier based on probabilities
-    pub fn select_weighted(
-        probabilities: (f64, f64, f64),
-        rng: &mut impl rand::RngCore
-    ) -> Self {
+    pub fn select_weighted(probabilities: (f64, f64, f64), rng: &mut impl rand::RngCore) -> Self {
         let (cookie_prob, query_prob, body_prob) = probabilities;
         let total = cookie_prob + query_prob + body_prob;
         let r: f64 = rng.gen_range(0.0..total);
@@ -55,10 +52,7 @@ pub struct AccessTicket {
 
 impl AccessTicket {
     /// Create a new access ticket
-    pub fn new(
-        config: &AccessTicketConfig,
-        target_length: usize,
-    ) -> Result<(Self, X25519KeyPair)> {
+    pub fn new(config: &AccessTicketConfig, target_length: usize) -> Result<(Self, X25519KeyPair)> {
         let cli_keypair = X25519KeyPair::generate();
         let nonce = {
             let mut n = [0u8; 32];
@@ -73,7 +67,8 @@ impl AccessTicket {
         let hour = now.as_secs() / 3600;
 
         // Generate ticket
-        let ticket_pub = config.ticket_public_key
+        let ticket_pub = config
+            .ticket_public_key
             .ok_or_else(|| HtxError::Config("No ticket public key configured".to_string()))?;
 
         let ticket = access_ticket::generate_ticket(
@@ -121,7 +116,8 @@ impl AccessTicket {
 
     /// Deserialize a ticket from bytes
     pub fn deserialize(mut data: &[u8]) -> Result<Self> {
-        if data.len() < 73 { // minimum size: 1 + 32 + 8 + 32 + 32
+        if data.len() < 73 {
+            // minimum size: 1 + 32 + 8 + 32 + 32
             return Err(HtxError::AccessTicket("Ticket too short".to_string()));
         }
 
@@ -199,11 +195,7 @@ impl TicketVerifier {
     }
 
     /// Verify an access ticket
-    pub async fn verify_ticket(
-        &self,
-        ticket_data: &[u8],
-        client_ip: IpAddr,
-    ) -> Result<bool> {
+    pub async fn verify_ticket(&self, ticket_data: &[u8], client_ip: IpAddr) -> Result<bool> {
         // Check rate limit first
         if !self.check_rate_limit(client_ip).await? {
             return Ok(false);
@@ -214,7 +206,8 @@ impl TicketVerifier {
 
         // Validate padding range
         if ticket.padding.len() < self.config.padding_range.0
-            || ticket.padding.len() > self.config.padding_range.1 {
+            || ticket.padding.len() > self.config.padding_range.1
+        {
             return Ok(false);
         }
 
@@ -238,7 +231,9 @@ impl TicketVerifier {
             }
 
             // Verify ticket for this hour
-            let ticket_priv = self.config.ticket_private_key
+            let ticket_priv = self
+                .config
+                .ticket_private_key
                 .ok_or_else(|| HtxError::Config("No ticket private key configured".to_string()))?;
 
             let is_valid = access_ticket::verify_ticket(
@@ -270,7 +265,8 @@ impl TicketVerifier {
         let subnet_ip = self.get_subnet_ip(client_ip);
 
         let mut limiters = self.rate_limiters.lock().unwrap();
-        let limiter = limiters.entry(subnet_ip)
+        let limiter = limiters
+            .entry(subnet_ip)
             .or_insert_with(|| RateLimiter::new(&self.config.rate_limit));
 
         Ok(limiter.check_rate())
@@ -295,7 +291,11 @@ impl TicketVerifier {
     }
 
     /// Extract ticket from HTTP cookie
-    pub fn extract_from_cookie(&self, cookie_header: &str, site_name: &str) -> Result<Option<Vec<u8>>> {
+    pub fn extract_from_cookie(
+        &self,
+        cookie_header: &str,
+        site_name: &str,
+    ) -> Result<Option<Vec<u8>>> {
         let prefix = format!("__Host-{site_name}=");
 
         for cookie in cookie_header.split(';') {

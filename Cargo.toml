@@ -71,6 +71,7 @@ tls-parser = "0.12"
 
 # Post-quantum crypto (for 2027+ requirement)
 pqcrypto-kyber = { version = "0.7", optional = true }
+pqcrypto-traits = { version = "0.3", optional = true }
 
 # Development dependencies
 [dev-dependencies]
@@ -85,7 +86,7 @@ env_logger = "0.11"
 default = ["tcp", "quic"]
 tcp = []
 quic = ["quinn", "quinn-proto"]
-post-quantum = ["pqcrypto-kyber"]
+post-quantum = ["pqcrypto-kyber", "pqcrypto-traits"]
 
 [profile.release]
 lto = true

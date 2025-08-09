@@ -1,8 +1,8 @@
-use thiserror::Error;
-use tokio::time::error::Elapsed;
-use tokio::task::JoinError;
 #[cfg(feature = "quic")]
 use quinn::{ConnectError, VarIntBoundsExceeded};
+use thiserror::Error;
+use tokio::task::JoinError;
+use tokio::time::error::Elapsed;
 
 /// Core HTX error types
 #[derive(Error, Debug)]

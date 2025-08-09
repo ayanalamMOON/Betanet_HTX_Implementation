@@ -3,7 +3,7 @@
 //! This example demonstrates advanced HTX client features and
 //! configuration options.
 
-use htx::{HtxClient, Config, Result, AccessTicket};
+use htx::{AccessTicket, Config, HtxClient, Result};
 use tokio;
 
 #[tokio::main]
@@ -27,13 +27,17 @@ async fn main() -> Result<()> {
     println!("✅ Client created successfully!");
     println!("\n⚙️  Configuration details:");
     println!("   • Transport: TCP and QUIC on port 443");
-    println!("   • Flow Control: {} bytes initial window", config.flow_control.initial_window_size);
+    println!(
+        "   • Flow Control: {} bytes initial window",
+        config.flow_control.initial_window_size
+    );
     println!("   • Noise Protocol: Standard configuration");
     println!("   • TLS: Default secure settings");
 
     // Create and display an access ticket
     let target_length = 150; // Target ticket size in bytes
-    let (_access_ticket, _client_keypair) = AccessTicket::new(&config.access_ticket, target_length)?;
+    let (_access_ticket, _client_keypair) =
+        AccessTicket::new(&config.access_ticket, target_length)?;
 
     println!("\n🎫 Access Ticket Created:");
     println!("   • Target length: {} bytes", target_length);

@@ -1,6 +1,6 @@
 //! Fuzz testing verification - exercises fuzzing paths without libfuzzer
-use crate::frame::Frame;
 use crate::access_ticket::AccessTicket;
+use crate::frame::Frame;
 use bytes::Bytes;
 
 #[cfg(test)]
@@ -28,8 +28,7 @@ mod tests {
             // Test frame creation and serialization - should not panic
             if data.len() >= 8 {
                 let stream_id = u64::from_be_bytes([
-                    data[0], data[1], data[2], data[3],
-                    data[4], data[5], data[6], data[7]
+                    data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7],
                 ]);
                 let payload = Bytes::from(data[8..].to_vec());
 
@@ -85,9 +84,9 @@ mod tests {
     #[test]
     fn fuzz_flow_control_paths() {
         let test_inputs = vec![
-            vec![1u8, 0, 0, 0],     // Small window
-            vec![0, 0, 0x10, 0],    // Medium window
-            vec![0, 1, 0, 0],       // Another medium window
+            vec![1u8, 0, 0, 0],  // Small window
+            vec![0, 0, 0x10, 0], // Medium window
+            vec![0, 1, 0, 0],    // Another medium window
         ];
 
         for data in test_inputs {
@@ -103,7 +102,8 @@ mod tests {
             }
 
             // Test flow control manager creation - should not panic
-            let (_manager, _rx) = crate::flow_control::FlowControlManager::new(window_size.max(1024));
+            let (_manager, _rx) =
+                crate::flow_control::FlowControlManager::new(window_size.max(1024));
             let _ = _manager;
         }
         println!("✅ Flow control fuzz paths verified");
@@ -114,7 +114,7 @@ mod tests {
         let test_inputs = vec![
             vec![0x16, 0x03, 0x03, 0x00, 0x20], // TLS header-like
             vec![0x16, 0x03, 0x01, 0x01, 0x00], // Different version
-            (0..100).collect::<Vec<u8>>(),       // Random data
+            (0..100).collect::<Vec<u8>>(),      // Random data
         ];
 
         for data in test_inputs {

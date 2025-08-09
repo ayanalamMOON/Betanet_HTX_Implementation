@@ -381,10 +381,8 @@ pub mod post_quantum {
             let kyber_ciphertext = pqcrypto_kyber::kyber768::Ciphertext::from_bytes(ciphertext)
                 .map_err(|e| HtxError::Crypto(format!("Invalid Kyber ciphertext: {:?}", e)))?;
 
-            let kyber_shared = pqcrypto_kyber::kyber768::decapsulate(
-                &kyber_ciphertext,
-                &self.kyber_keypair.secret,
-            );
+            let kyber_shared =
+                pqcrypto_kyber::kyber768::decapsulate(&kyber_ciphertext, &self.kyber_secret);
 
             // Combine shared secrets
             let mut combined = Vec::new();
