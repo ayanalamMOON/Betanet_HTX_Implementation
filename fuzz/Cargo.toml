@@ -1,0 +1,52 @@
+[package]
+name = "htx-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+htx = { path = ".." }
+arbitrary = { version = "1.0", features = ["derive"] }
+bytes = "1.0"
+tokio = { version = "1.0", features = ["full"] }
+chacha20poly1305 = "0.10"
+x25519-dalek = "2.0"
+snow = "0.9"
+
+# Prevent this from interfering with workspaces
+[workspace]
+members = ["."]
+
+[[bin]]
+name = "fuzz_frame_parsing"
+path = "fuzz_targets/fuzz_frame_parsing.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzz_access_ticket"
+path = "fuzz_targets/fuzz_access_ticket.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzz_noise_handshake"
+path = "fuzz_targets/fuzz_noise_handshake.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzz_flow_control"
+path = "fuzz_targets/fuzz_flow_control.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzz_tls_fingerprinting"
+path = "fuzz_targets/fuzz_tls_fingerprinting.rs"
+test = false
+doc = false

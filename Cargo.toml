@@ -1,0 +1,96 @@
+[package]
+name = "htx"
+version = "1.1.1"
+edition = "2021"
+authors = ["Betanet Development Team"]
+description = "HTX Covert Transport Layer - Core networking library for Betanet"
+license = "MIT OR Apache-2.0"
+keywords = ["betanet", "transport", "encryption", "noise", "tls"]
+categories = ["network-programming", "cryptography"]
+repository = "https://github.com/ravendevteam/betanet"
+readme = "README.md"
+
+[dependencies]
+# Async runtime and networking
+tokio = { version = "1.40", features = ["full"] }
+tokio-util = { version = "0.7", features = ["codec", "net"] }
+futures = "0.3"
+
+# TLS and crypto (aligned for quinn compatibility)
+rustls = { version = "0.21" }
+tokio-rustls = "0.24"
+rustls-pemfile = "1.0"
+webpki-roots = "0.25"
+ring = "0.17"
+
+# Noise protocol
+snow = "0.9"
+
+# QUIC
+quinn = { version = "0.11", optional = true, default-features = false, features=["rustls"] }
+quinn-proto = { version = "0.11", optional = true }
+
+# Crypto primitives
+chacha20poly1305 = "0.10"
+x25519-dalek = { version = "2.0", features = ["serde", "static_secrets"] }
+ed25519-dalek = { version = "2.0", features = ["serde"] }
+sha2 = "0.10"
+md5 = "0.7"
+hkdf = "0.12"
+rand = "0.8"
+rand_core = "0.6"
+
+# HTTP (keep h2, drop h3 until QUIC HTTP/3 layer finalized)
+hyper = { version = "1.0", features = ["full"] }
+hyper-util = { version = "0.1", features = ["full"] }
+h2 = "0.4"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+ciborium = "0.2"  # CBOR
+base64 = "0.22"
+
+# Utilities
+bytes = "1.0"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+thiserror = "1.0"
+anyhow = "1.0"
+url = "2.0"
+httparse = "1.8"
+hex = "0.4"
+uuid = { version = "1.0", features = ["serde"] }
+
+# Time and random
+chrono = { version = "0.4", features = ["serde"] }
+getrandom = "0.2"
+
+# Anti-fingerprinting
+tls-parser = "0.12"
+
+# Post-quantum crypto (for 2027+ requirement)
+pqcrypto-kyber = { version = "0.7", optional = true }
+
+# Development dependencies
+[dev-dependencies]
+criterion = "0.5"
+proptest = "1.0"
+tokio-test = "0.4"
+tempfile = "3.0"
+env_logger = "0.11"
+
+# Features
+[features]
+default = ["tcp", "quic"]
+tcp = []
+quic = ["quinn", "quinn-proto"]
+post-quantum = ["pqcrypto-kyber"]
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"
+
+[profile.bench]
+debug = true
