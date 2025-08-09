@@ -1,4 +1,4 @@
-# Bounty Submission Email Draft
+# Bounty Submission.
 
 **To:** contact@ravendevteam.org  
 **Subject:** Bounty Submission: $400 HTX Client/Server Crate Implementation - Betanet L2 Protocol
@@ -13,8 +13,7 @@ I am submitting my implementation for the **$400 USD HTX Client/Server Crate bou
 
 I have successfully developed a production-ready HTX (HTTP over Encrypted Transport) library in Rust that fully implements the Betanet 1.1 Layer 2 (Cover Transport) specification. The implementation not only meets all requirements but significantly exceeds them.
 
-**GitHub Repository:** https://github.com/ayanalamMOON/betanet-htx-implementation  
-**Version:** v1.1.1  
+**Version:** v1.1.1  ion 
 **Implementation Date:** August 2025
 
 ## Specification Compliance
@@ -105,8 +104,6 @@ cargo build --release      # Build production binary
 
 I am available for any questions, clarifications, or additional requirements regarding this bounty submission.
 
-**GitHub:** https://github.com/ayanalamMOON  
-**LinkedIn:** https://www.linkedin.com/in/md-ayan-alam-b9b1021aa  
 
 Thank you for your consideration. I look forward to your response.
 
@@ -115,7 +112,6 @@ Best regards,
 **Ayan Alam**  
 Future Data Scientist | Software Developer  
 Email: mdayanalam12a@gmail.com  
-GitHub: @ayanalamMOON  
 Date: August 9, 2025
 
 ---
